@@ -18,9 +18,7 @@ export class TasksService {
     }
 
     const { status, search } = taskFilteredDto;
-    let filteredTasks: Task[] = JSON.parse(
-      JSON.stringify(this.getAllTasks()),
-    ) as Task[];
+    let filteredTasks: Task[] = Utils.deepClone(this.getAllTasks());
 
     if (status) {
       filteredTasks = filteredTasks.filter((task) => task.status === status);

@@ -9,11 +9,14 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { Task, TaskStatus } from './models/task.model';
 import { TasksService } from './tasks.service';
 import { GetTasksFilteredDto } from './dtos/get-tasks-filtered';
+import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 
 @Controller('tasks')
 export class TasksController {
@@ -30,7 +33,7 @@ export class TasksController {
   }
 
   @Post()
-  // we can extract specific value in body by using @Body('key'). Ex: @Body('title')
+  @UsePipes(ValidationPipe)
   createTask(@Body() createTaskRequestDto: CreateTaskDto): Task {
     return this.tasksService.createTask(createTaskRequestDto);
   }
@@ -38,7 +41,7 @@ export class TasksController {
   @Patch('/:id/status')
   updateTaskById(
     @Param('id') id: string,
-    @Body('status') status: TaskStatus,
+    @Body('status', TaskStatusValidationPipe) status: TaskStatus,
   ): Task {
     return this.tasksService.updateTaskStatusById(id, status);
   }

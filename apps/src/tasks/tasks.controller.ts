@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseIntPipe,
   Patch,
@@ -17,15 +18,22 @@ import { GetTasksFilteredDto } from './dtos/get-tasks-filtered';
 import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 import { TaskStatus } from 'src/enums/task-status.enum';
 import { Task } from 'src/entities/task.entity';
+import { TASK_LOG } from 'src/constants/task-log.constant';
 
 @Controller('tasks')
 export class TasksController {
+  private logger = new Logger(TASK_LOG.TasksController);
+
   constructor(private tasksService: TasksService) {}
 
   @Get()
   getTasks(
     @Query(ValidationPipe) taskFilteredDto: GetTasksFilteredDto,
   ): Promise<Task[]> {
+    this.logger.verbose(
+      `Get tasks with filters "${JSON.stringify(taskFilteredDto)}"`,
+    );
+
     return this.tasksService.getTasks(taskFilteredDto);
   }
 
@@ -37,6 +45,9 @@ export class TasksController {
   @Post()
   @UsePipes(ValidationPipe)
   createTask(@Body() createTaskRequestDto: CreateTaskDto): Promise<Task> {
+    this.logger.verbose(
+      `Create a task: ${JSON.stringify(createTaskRequestDto)}`,
+    );
     return this.tasksService.createTask(createTaskRequestDto);
   }
 

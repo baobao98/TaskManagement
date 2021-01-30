@@ -1,3 +1,5 @@
+import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { TASK_LOG } from 'src/constants/task-log.constant';
 import { TaskStatus } from 'src/enums/task-status.enum';
 import { CreateTaskDto } from 'src/tasks/dtos/create-task.dto';
 import { GetTasksFilteredDto } from 'src/tasks/dtos/get-tasks-filtered';
@@ -6,6 +8,8 @@ import { Task } from '../entities/task.entity';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
+  private logger = new Logger(TASK_LOG.TasksController);
+
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
 
@@ -14,7 +18,12 @@ export class TaskRepository extends Repository<Task> {
     task.description = description;
     task.status = TaskStatus.OPEN;
 
-    await task.save();
+    try {
+      await task.save();
+    } catch (error) {
+      this.logger.error(`Failed to create a task ${createTaskDto}`);
+      throw new InternalServerErrorException();
+    }
 
     return task;
   }
@@ -36,8 +45,15 @@ export class TaskRepository extends Repository<Task> {
       );
     }
 
-    const tasks = query.getMany();
-
-    return tasks;
+    try {
+      const tasks = query.getMany();
+      return tasks;
+    } catch (error) {
+      this.logger.error(
+        `Failed to get tasks with DTO: ${JSON.stringify(taskFilteredDto)}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 }

@@ -1,0 +1,15 @@
+version: "3.7"
+
+services: 
+    database: 
+        image: "postgres" # use latest official postgres version
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_USER: baobao
+            POSTGRES_PASSWORD: pelongla
+            POSTGRES_DB: taskmanagement
+        volumes:
+            - task-data:/var/lib/postgresql
+volumes: 
+    task-data:

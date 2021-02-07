@@ -15,4 +15,4 @@
 **3. Reference**
 
 - Docs: [https://docs.nestjs.com](https://docs.nestjs.com/)
-- Demo project: https://www.udemy.com/course/nestjs-zero-to-hero
+- This project is only a simple version, referencing from this course: https://www.udemy.com/course/nestjs-zero-to-hero

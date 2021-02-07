@@ -1,14 +1,14 @@
+import { TaskStatus } from '../enums/task-status.enum';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
-import { TASK_LOG } from 'src/constants/task-log.constant';
-import { TaskStatus } from 'src/enums/task-status.enum';
 import { CreateTaskDto } from 'src/tasks/dtos/create-task.dto';
 import { GetTasksFilteredDto } from 'src/tasks/dtos/get-tasks-filtered';
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from '../entities/task.entity';
+import { TASK_LOG } from '../constants/task-log.constant';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
-  private logger = new Logger(TASK_LOG.TasksController);
+  private logger = new Logger(TASK_LOG.TaskRepository);
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     const { title, description } = createTaskDto;
